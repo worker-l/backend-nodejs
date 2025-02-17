@@ -1,0 +1,59 @@
+diff --git a/configure.py b/configure.py
+index ce41bff4..c947020b 100755
+--- a/configure.py
++++ b/configure.py
+@@ -1236,7 +1236,8 @@ def configure_node(o):
+   o['default_configuration'] = 'Debug' if options.debug else 'Release'
+   o['variables']['error_on_warn'] = b(options.error_on_warn)
+
+-  host_arch = host_arch_win() if os.name == 'nt' else host_arch_cc()
++  # host_arch = host_arch_win() if os.name == 'nt' else host_arch_cc()
++  host_arch = os.environ.get('HOST_ARCH')
+   target_arch = options.dest_cpu or host_arch
+   # ia32 is preferred by the build tools (GYP) over x86 even if we prefer the latter
+   # the Makefile resets this to x86 afterward
+diff --git a/deps/cares/config/linux/ares_config.h b/deps/cares/config/linux/ares_config.h
+index 3ba7e37d..d429abac 100644
+--- a/deps/cares/config/linux/ares_config.h
++++ b/deps/cares/config/linux/ares_config.h
+@@ -128,7 +128,7 @@
+ #define HAVE_GETNAMEINFO 1
+
+ /* Define to 1 if you have the getservbyport_r function. */
+-#define HAVE_GETSERVBYPORT_R 1
++/* #undef HAVE_GETSERVBYPORT_R */
+
+ /* Define to 1 if you have the `gettimeofday' function. */
+ #define HAVE_GETTIMEOFDAY 1
+diff --git a/node.gyp b/node.gyp
+index de409a31..b0bf16a0 100644
+--- a/node.gyp
++++ b/node.gyp
+@@ -116,9 +116,6 @@
+           '-Wl,-bnoerrmsg',
+         ],
+       }],
+-      ['OS == "linux" and llvm_version != "0.0"', {
+-        'libraries': ['-latomic'],
+-      }],
+     ],
+   },
+
+diff --git a/tools/v8_gypfiles/v8.gyp b/tools/v8_gypfiles/v8.gyp
+index ed042f88..8f47ee04 100644
+--- a/tools/v8_gypfiles/v8.gyp
++++ b/tools/v8_gypfiles/v8.gyp
+@@ -947,13 +947,6 @@
+         ['v8_enable_third_party_heap', {
+           # TODO(targos): add values from v8_third_party_heap_libs to link_settings.libraries
+         }],
+-        # Platforms that don't have Compare-And-Swap (CAS) support need to link atomic library
+-        # to implement atomic memory access
+-        ['v8_current_cpu in ["mips", "mipsel", "mips64", "mips64el", "ppc", "arm", "riscv64"]', {
+-          'link_settings': {
+-            'libraries': ['-latomic', ],
+-          },
+-        }],
+       ],
+     },  # v8_base_without_compiler
+     {
