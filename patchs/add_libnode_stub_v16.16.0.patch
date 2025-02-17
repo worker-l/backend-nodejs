@@ -1,0 +1,25 @@
+diff --git a/node.gyp b/node.gyp
+index 74e9f9cc2e..6105034415 100644
+--- a/node.gyp
++++ b/node.gyp
+@@ -345,6 +345,19 @@
+         }],
+       ],
+     }, # node_core_target_name
++    {
++      'target_name': 'libnode_stub',
++      'type': '<(node_intermediate_lib_type)',
++      'include_dirs': [
++        'src',
++        'deps/v8/include',
++        'deps/uv/include'
++      ],
++      'sources': [
++        'src/node_snapshot_stub.cc',
++        'src/node_code_cache_stub.cc',
++      ]
++    },
+     {
+       'target_name': '<(node_lib_target_name)',
+       'type': '<(node_intermediate_lib_type)',
+

@@ -79,7 +79,7 @@ index d163ae31..2ce1c301 100644
 -                    part_of_all,
 -                    postbuilds=postbuilds,
 -                )
-+                    actions = ['$(call create_thin_archive,$@,$^)']
++                    actions = ['$(call create_archive,$@,$^)']
 +                  )
 +                else:
 +                  self.WriteDoCmd(
